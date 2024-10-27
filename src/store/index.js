@@ -9,13 +9,17 @@ const store = createStore({
     requests: requestsModule
 },
   state() {
-
+    return {
+      userId: 'c3'
+    }
   },
   mutations: {
 
   },
   getters: {
-
+    userId(state) {
+      return state.userId;
+    }
   },
   actions: {
     
