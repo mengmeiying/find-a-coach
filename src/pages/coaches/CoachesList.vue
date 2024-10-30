@@ -1,4 +1,5 @@
 <template>
+  <div>
   <base-dialog 
   :show="!!error" 
   title="An error occured!"
@@ -36,6 +37,7 @@
       <h3 v-else>No coaches found!</h3>
     </base-card>
   </section>
+</div>
 </template>
 
 
