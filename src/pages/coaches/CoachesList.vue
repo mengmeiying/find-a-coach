@@ -1,4 +1,13 @@
 <template>
+  <base-dialog 
+  :show="!!error" 
+  title="An error occured!"
+  @close="handleError"
+  >
+    <p>
+      {{ error }}
+    </p>
+  </base-dialog>
   <section>
     <coach-filter @change-filter="setFilters"></coach-filter>
   </section>
@@ -6,7 +15,9 @@
     <base-card>
       <div class="controls">
         <base-button mode="outline" @click="loadCoaches">Refresh</base-button>
-        <base-button to="/register" link="true" v-if="!isCoach && !isLoading">Register as Coach</base-button>
+        <base-button to="/register" link="true" v-if="!isCoach && !isLoading"
+          >Register as Coach</base-button
+        >
       </div>
       <div v-if="isLoading">
         <base-spinner></base-spinner>
@@ -36,17 +47,18 @@ export default {
   data() {
     return {
       isLoading: false,
+      error: null,
       activeFilters: {
         frontend: true,
         backend: true,
         career: true,
-      }
-    }
+      },
+    };
   },
   computed: {
     filteredCoaches() {
       const coaches = this.$store.getters['coaches/coaches'];
-      return coaches.filter(coach => {
+      return coaches.filter((coach) => {
         if (this.activeFilters.frontend && coach.areas.includes('frontend')) {
           return true;
         }
@@ -57,14 +69,14 @@ export default {
           return true;
         }
         return false;
-      })
+      });
     },
     hasCoaches() {
       return !this.isLoading && this.$store.getters['coaches/hasCoaches'];
     },
     isCoach() {
       return this.$store.getters['coaches/isCoach'];
-    }
+    },
   },
   created() {
     this.loadCoaches();
@@ -75,10 +87,18 @@ export default {
     },
     async loadCoaches() {
       this.isLoading = true;
-       await this.$store.dispatch('coaches/loadCoaches');
+      try {
+        await this.$store.dispatch('coaches/loadCoaches');
+      } catch (error) {
+        this.error = error.message || 'Something went wrong';
+      }
+
       this.isLoading = false;
+    },
+    handleError() {
+      this.error = null;
     }
-  }
+  },
 };
 </script>
 
